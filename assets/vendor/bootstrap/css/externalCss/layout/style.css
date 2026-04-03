@@ -1,6 +1,5 @@
 .mobile-sidebar::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
+  display: none; /* Chrome/Safari */
 }
 .sidebar-menu {
   width: 100%;
@@ -110,7 +109,7 @@
 
 .mobile-sidebar {
   position: fixed;
-  left: 15px;
+  left: 20px;
   top: 50%;
   transform: translateY(-50%);
   width: var(--sidebar-width);
@@ -129,7 +128,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #e6e6e6;
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   overflow-x: hidden;
 }
 
@@ -139,7 +138,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: calc(
+    100% - var(--sidebar-width) - 30px
+  ); /* Subtract sidebar width + left offset */
+  margin-left: calc(
+    var(--sidebar-width) + 20px
+  ); /* Push content to the right */
+  box-sizing: border-box;
 }
 
 /* 1. TABLET (Skrin Sederhana) */
@@ -213,13 +218,11 @@ body {
 /* 4. TELEFON MELINTANG (Landscape) / Skrin Pendek */
 @media (max-height: 500px) {
   .mobile-sidebar {
-    top: 5px;
-    bottom: 5px;
-    transform: none; /* Batal fungsi tengah supaya boleh scroll */
-    padding: 10px 0;
-    border-radius: 30px;
-    max-height: 98vh;
-    overflow-y: auto; /* Benarkan scroll jika butang banyak */
+    top: 50%;
+    transform: translateY(-50%); /* Keep it centered vertically */
+    height: 90vh; /* Don't let it touch the very top/bottom */
+    max-height: 400px; /* Limit height so it stays a capsule */
+    padding: 15px 0;
   }
 
   /* Sorok scrollbar yang hodoh */
@@ -232,14 +235,15 @@ body {
     margin-bottom: 5px;
   }
   .sidebar-logo .sidebar-icon-img {
-    width: 40px;
-    height: 45px;
+    width: 35px;
+    height: 40px;
   }
   .sidebar-menu {
     gap: 2px; /* Rapatkan maksimum */
+    justify-content: center;
   }
   .sidebar-item {
-    height: 42px;
+    height: 35px;
   }
 
   /* BENTUK LEKUK MELINTANG */
