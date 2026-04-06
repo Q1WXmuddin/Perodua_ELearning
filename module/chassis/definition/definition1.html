@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <script src="../../../assets/vendor/bootstrap/js/externalJs/header.js"></script>
+    <style>
+      :root {
+        --bg-color: #e6e6e6;
+        --accent-green: #1a632a;
+        --box-bg: #ffffff;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg-color);
+        height: 100vh;
+        /* NEW: Enable vertical scrolling if content is too high */
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .main-container {
+        width: 95%; /* Adjust based on your sidebar width */
+        margin: 0 auto;
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      .title {
+        font-weight: bold;
+        color: var(--accent-green);
+        font-size: 39px;
+        margin-bottom: 20px;
+      }
+
+      /* Styling for the content boxes */
+      .content-box {
+        background-color: var(--box-color);
+        width: 100%;
+        max-width: 800px;
+        padding: 30px 50px; /* Increased top/bottom padding */
+        border-radius: 20px;
+        box-shadow: var(--box-shadow);
+        position: relative; /* Essential for overlaying the car image */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 400;
+        color: #333;
+        transition: all 0.4s ease; /* Smooth transition for resizing */
+        cursor: pointer;
+      }
+      /* Hidden sentences by default */
+      .corner-text {
+        position: absolute;
+        font-size: 16px;
+        font-weight: 400;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        width: 40%;
+        line-height: 1.2;
+      }
+      .corner-text b {
+        color: var(--accent-green);
+      }
+      /* Corner Positions */
+      .top-left {
+        top: 30px;
+        left: 30px;
+        text-align: left;
+      }
+      .top-right {
+        top: 30px;
+        right: 50px;
+        text-align: right;
+      }
+      .bottom-left {
+        bottom: 30px;
+        left: 30px;
+        text-align: left;
+      }
+      .bottom-right {
+        bottom: 30px;
+        right: 30px;
+        text-align: right;
+      }
+
+      /* EXPANDED STATE */
+      .content-box.expanded {
+        max-width: 950px; /* Becomes wider */
+        padding: 85px 10px; /* Becomes taller */
+      }
+      .content-box.expanded .corner-text {
+        opacity: 1; /* Show sentences */
+      }
+      .content-box.expanded .expand-icon {
+        transform: rotate(180deg); /* Visual feedback */
+      }
+      /* Style for the expand icons */
+      .expand-icon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 0.7rem;
+        color: #000000b0;
+        cursor: pointer; /* makes it feel clickable */
+      }
+
+      .content-box1 {
+        background-color: var(--box-color);
+        width: 100%;
+        max-width: 800px;
+        padding: 30px 50px; /* Increased top/bottom padding */
+        border-radius: 20px;
+        box-shadow: var(--box-shadow);
+        position: relative; /* Essential for overlaying the car image */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 28px;
+        font-weight: 400;
+        color: #333;
+        transition: all 0.4s ease; /* Smooth transition for resizing */
+        cursor: pointer;
+      }
+      /* The Exploded View Image (Hidden by default) */
+      .exploded-view {
+        display: none;
+        width: 100%;
+        height: auto;
+        padding: 20px;
+        text-align: center;
+      }
+      /* The LARGE IMAGE scaling */
+      .exploded-view img {
+        height: 55vh; /* Very tall, fills most of the screen height */
+        width: auto;
+        max-width: 100%;
+        object-fit: contain; /* Maintain proportion */
+        position: relative;
+        z-index: 1;
+      }
+
+      /* EXPANDED STATE FOR BOX 2 */
+      .content-box1.expanded {
+        max-width: 950px;
+        background-color: transparent; /* Makes it look like the image is on the background */
+        box-shadow: none;
+      }
+      .content-box1.expanded .definition1,
+      .content-box1.expanded .car-image,
+      .content-box1.expanded .expand-icon1 {
+        display: none; /* Hide original content */
+      }
+      .content-box1.expanded .exploded-view {
+        display: block; /* Show the new image */
+      }
+      .definition1 {
+        text-align: right; /* This aligns the lines of text relative to each other */
+        flex: 1; /* Takes up available space to push the image to the right */
+        display: flex;
+        justify-content: center; /* Centers the text block horizontally within its area */
+      }
+      /* Style for the expand icons */
+      .expand-icon1 {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 0.7rem;
+        color: #000000b0;
+        cursor: pointer; /* makes it feel clickable */
+      }
+      /* Car image styling in Box 2 */
+      .car-image {
+        bottom: -20px; /* Positions image over the container bottom border */
+        right: 40px;
+        height: 280px; /* Match height relative to text box */
+      }
+
+      /* Next Button Positioning */
+      .next-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        z-index: 1000; /* Keeps it above all other content */
+      }
+
+      .next-btn:hover {
+        transform: scale(1.1); /* Subtle grow effect on hover */
+      }
+
+      .next-btn img {
+        width: 50px; /* Adjust size to match your UI */
+        height: auto;
+      }
+
+      /* --- RESPONSIVE ADJUSTMENTS --- */
+
+      /* Tablet & Mobile (Widths below 768px) */
+      @media screen and (max-width: 768px) {
+        .main-container {
+          width: 90%;
+          padding-top: 10px;
+        }
+        .title {
+          font-size: 28px; /* Smaller title */
+        }
+        .content-box,
+        .content-box1 {
+          padding: 20px; /* Reduce padding */
+          font-size: 22px; /* Smaller main text */
+        }
+        .content-box.expanded {
+          padding: 75px 10px; /* Adjust height when expanded */
+        }
+        .corner-text {
+          font-size: 12px; /* Smaller info text */
+          width: 45%;
+        }
+        .car-image {
+          height: 150px; /* Scale down the car image */
+          right: 10px;
+        }
+        .exploded-view img {
+          height: 95vh; /* Scale down the exploded view */
+        }
+      }
+
+      /* Phone (Widths below 480px) */
+      @media screen and (max-width: 480px) {
+        .title {
+          font-size: 24px;
+        }
+        /* Shift positions to prevent text clipping on narrow screens */
+        .top-left {
+          top: 15px;
+          left: 15px;
+        }
+        .top-right {
+          top: 15px;
+          right: 15px;
+        }
+        .bottom-left {
+          bottom: 15px;
+          left: 15px;
+        }
+        .bottom-right {
+          bottom: 15px;
+          right: 15px;
+        }
+
+        .content-box.expanded {
+          padding: 80px 5px; /* Give more height for text */
+        }
+        .content-box,
+        .content-box1 {
+          font-size: 18px;
+          border-radius: 15px;
+        }
+        /* On very small phones, hide the car image in the small box to save space */
+        .content-box1 .car-image {
+          height: 100px;
+          bottom: -10px;
+        }
+        .next-btn img {
+          width: 40px; /* Smaller arrow button */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="title">DEFINITION</div>
+
+      <div
+        class="content-box"
+        id="chassisBox"
+        onclick="toggleBox('chassisBox')"
+      >
+        <div class="corner-text top-left">
+          <b>Main structure</b> of vehicle that<br />
+          holds sub components
+        </div>
+        <div class="corner-text top-right">
+          Withstand all stresses that act on vehicle in both<br />
+          <b>static</b> and
+          <b>dynamic conditions</b>
+        </div>
+        <div class="corner-text bottom-left">
+          Provides <b>mounting platform</b> <br />for all sub-components
+        </div>
+        <div class="corner-text bottom-right">
+          It analogous to the <b>backbone</b> <br />skeleton of a human
+        </div>
+
+        <div>What is Chassis?</div>
+        <i class="expand-icon fas fa-expand-arrows-alt"></i>
+      </div>
+
+      <div
+        class="content-box1"
+        id="positionBox"
+        onclick="toggleBox('positionBox')"
+      >
+        <div class="definition1">
+          Where is The <br />Position <br />of Chassis in a Car?
+        </div>
+        <i class="expand-icon1 fas fa-expand-arrows-alt"></i>
+        <img
+          src="../../../assets/vendor/bootstrap/image/chassis/definition/definition1.png"
+          alt="Car Chassis"
+          class="car-image"
+        />
+        <div class="exploded-view">
+          <img
+            src="../../../assets/vendor/bootstrap/image/chassis/definition/definition2.png"
+            alt="Chassis Exploded View"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="next-btn" onclick="goToNextPage()">
+      <img src="../../../assets/vendor/bootstrap/image/next.png" alt="Next" />
+    </div>
+    <script>
+      function toggleBox(id) {
+        const box = document.getElementById(id);
+        box.classList.toggle("expanded");
+      }
+
+      function goToNextPage() {
+        // Replace with your actual next page URL
+        window.location.href = "next_page.html";
+      }
+    </script>
+  </body>
+</html>
